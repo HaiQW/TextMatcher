@@ -9,10 +9,23 @@ An NLP program used for short text classification.
 3. 诸葛亮太好用了，简直是排位的大杀器
 4. 诸葛亮周瑜火烧赤壁大败曹操
 
-
-# Solution
-
 # Experimental enviroment
 python 2.7
 pytorch 0.4.0
+
+# Solution
+
+### 1. Download repo, corpus, pretrained word embeddings, and pretraimed model
+Download repo: git clone
+Download retrained word embeddings:
+Download the pretraimed lstm model:
+
+### 2. Train the word embedding if possible.
+If you want retrain or train your own word embeddings, you must download the corpus data first.
+
+### 3. Train the lstm multilabel classifier.
+
+### 4. Predict the label of the given title.
+
+
 
