@@ -10,18 +10,20 @@ An NLP program used for short text classification.
 4. 诸葛亮周瑜火烧赤壁大败曹操
 
 # Experimental enviroment
-python 2.7
-pytorch 0.4.0
+  python 2.7
+  pytorch 0.4.0
 
 # Solution
 
-### 1. Download repo, corpus, pretrained word embeddings, and pretraimed model
-Download repo: git clone
-Download retrained word embeddings:
-Download the pretraimed lstm model:
+### 1. Download the repo, the corpus, the pretrained word embeddings, and the pretraimed lstm model
+
+  Download repo: git clone https://github.com/HaiQW/TextMatcher
+  Download retrained word embeddings:
+  Download the pretraimed lstm model:
 
 ### 2. Train the word embedding if possible.
-If you want retrain or train your own word embeddings, you must download the corpus data first.
+
+  If you want retrain or train your own word embeddings, you must download the corpus data first.
 
 ### 3. Train the lstm multilabel classifier.
 
