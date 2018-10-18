@@ -11,3 +11,8 @@ An NLP program used for short text classification.
 
 
 # Solution
+
+# Experimental enviroment
+python 2.7
+pytorch 0.4.0
+
