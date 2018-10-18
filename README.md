@@ -17,9 +17,19 @@ An NLP program used for short text classification.
 
 ### 1. Download the repo, the corpus, the pretrained word embeddings, and the pretraimed lstm model
 
-  Download repo: git clone https://github.com/HaiQW/TextMatcher
-  Download retrained word embeddings:
-  Download the pretraimed lstm model:
+  Repo: git clone https://github.com/HaiQW/TextMatcher
+  
+  Corpus: 
+  
+  This corpus is a combination of the whole Chinese wikipedia corpus and part of Baidu baike corpus.
+  Also, you can prepare your use-specific corpus if you prefer.
+ 
+  Pretrained Word embeddings:  
+  
+  Thoese word embeddings contain a totol of 400,000+ words.  
+  
+  Pretrained lstm model:
+
 
 ### 2. Train the word embedding if possible.
 
