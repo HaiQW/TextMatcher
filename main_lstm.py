@@ -64,7 +64,12 @@ def train():
         type=str, 
         default='trained_models/model.lstm', 
         help='The file of the lstm model.')
-
+    parser.add_argument(
+        '--testing_file', 
+        type=str, 
+        default='data/test/test.word', 
+        help='The file of the tesing data.')
+ 
     args = parser.parse_args()
     phase = args.phase
     embedding_file = args.embedding_file
@@ -149,7 +154,7 @@ def train():
         train_lstm(model, model_path, optimizer, dataloader, labels, EPOCHS)
 
     if phase == 'test':
-        test_file = 'test.word'
+        test_file = args.testing_file
         model.load_state_dict(torch.load(model_path)) 
         optimizer.zero_grad()
         testing_data, labels = encode_setence(test_file, word2id, 1)
