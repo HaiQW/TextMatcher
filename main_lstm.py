@@ -11,6 +11,7 @@
 import os
 import sys
 import codecs
+import argparse
 
 import numpy as np
 
@@ -48,9 +49,26 @@ def packed_batch(batch_in, lengths):
 
 
 def train():
-    phase = sys.argv[1]
-    embedding_file = 'trained_models/40w_embedding.txt'
-    model_path = 'trained_models/model.lstm'
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        '--phase', 
+        type=str, 
+        help='Train or test.')
+    parser.add_argument(
+        '--embedding_file', 
+        type=str, 
+        default='trained_models/40w_embedding.txt',
+        help='Filename to save the trained word embeddings.')
+    parser.add_argument(
+        '--model_path', 
+        type=str, 
+        default='trained_models/model.lstm', 
+        help='The file of the lstm model.')
+
+    args = parser.parse_args()
+    phase = args.phase
+    embedding_file = args.embedding_file
+    model_path = args.model_path
 
     embeddings, word2id, id2word = load_embedding(embedding_file)
     id2label = dict({
