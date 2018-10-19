@@ -45,14 +45,14 @@ An NLP program used for short text classification.
   ```bash 
   python main_lstm.py --phase=train --embedding_file=path/to/file --model_path=path/to/model
   ```
-  - To test the LSTM classifier, run: 
+### 4. Match the title label.
+
+  - To predict using the LSTM classifier, run: 
   ```
   python main_lstm.py --phase=test --embedding_file=path/to/file --model_path=path/to/model \
   --testing_file=path/to/testing/file
   ```
-
-### 4. Predict the label using the naive method.
-  - To test the naive method, run
+  - To predict using the naive method (purely base on the word embeddings), run:
   ```bash
   python main_naive.py --embedding_file=trained_models/40w_embedding.txt --testing_file=data/test/test.word 
   ```
