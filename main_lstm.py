@@ -10,11 +10,11 @@
 #***************************************************************#
 import os
 import sys
+import random
 import codecs
 import argparse
 
 import numpy as np
-
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -38,17 +38,7 @@ def get_padding_codes(sentence_codes):
     return padding_codes, lengths
 
 
-def packed_batch(batch_in, lengths):
-    # lengths = torch.FloatTensor(lengths)
-    _, idx_sort = torch.sort(lengths, dim=0, descending=True)
-    _, idx_unsort = torch.sort(idx_sort, dim=0)
-    batch_in = batch_in.index_select(0, idx_sort)
-    lengths = list(lengths[idx_sort].data.numpy())
-    batch_packed = nn.utils.rnn.pack_padded_sequence(batch_in, lengths, batch_first=True)
-    return batch_packed
-
-
-def train():
+def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         '--phase', 
@@ -57,19 +47,27 @@ def train():
     parser.add_argument(
         '--embedding_file', 
         type=str, 
-        default='trained_models/40w_embedding.txt',
         help='Filename to save the trained word embeddings.')
     parser.add_argument(
         '--model_path', 
         type=str, 
-        default='trained_models/model.lstm', 
         help='The file of the lstm model.')
     parser.add_argument(
-        '--testing_file', 
+        '--test_file', 
         type=str, 
-        default='data/test/test.word', 
         help='The file of the tesing data.')
- 
+    parser.add_argument(
+        '--epochs',
+        type=int,
+        default=100,
+        help='The number of training epochs.'
+    ) 
+    parser.add_argument(
+        '--batch_size',
+        type=int,
+        default=50,
+        help='The batch size of the training phrase.'
+    )
     args = parser.parse_args()
     phase = args.phase
     embedding_file = args.embedding_file
@@ -88,85 +86,104 @@ def train():
         8: u'婚姻'
     })
 
-    # create the lstm model.
     EMBEDDING_DIM = 100
     HIDDEN_DIM = 200
     LINEAR_HIDDEN_DIM = 100 
     N_CLASSES = len(id2label)
-    EPOCHS = 100
-    model = LSTMClassifier(EMBEDDING_DIM, HIDDEN_DIM, LINEAR_HIDDEN_DIM, len(word2id.keys()), 
-                           N_CLASSES, embeddings)
+
+    # Create the lstm model
+    model = LSTMClassifier(EMBEDDING_DIM, HIDDEN_DIM, LINEAR_HIDDEN_DIM, 
+                           len(word2id.keys()), N_CLASSES, embeddings)
     optimizer = optim.Adam(
         filter(lambda p: p.requires_grad, model.parameters()), lr=5e-4)
     print(model) 
 
     if phase == 'train':
-        print('Train the LSTM text classifier model...')
-        # Load training data and prepare labels
-        rollplay_data_file = 'data/train/1k_std_rollplay.word'
-        moba_data_file = 'data/train/1k_std_moba.word'
-        sportgame_data_file = 'data/train/1k_std_sport_game.word'
-        sanguo_data_file = 'data/train/1k_std_sanguo.word'
-        cloth_data_file = 'data/train/1k_std_cloth.word'
-        marriage_data_file = 'data/train/1k_std_marriage.word' 
-        sport_data_file = 'data/train/1k_std_sport.word'
-        corpus_files = [
-            rollplay_data_file, 
-            moba_data_file, 
-            sportgame_data_file, 
-            sanguo_data_file,
-            cloth_data_file,
-            marriage_data_file,
-            sport_data_file
-        ]
-        text_labels = [
-            [1, 1, 0, 0, 0, 0, 0, 0, 0], 
-            [1, 0, 1, 0, 0, 0, 0, 0, 0], 
-            [1, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 1, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 1, 1, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 1],
-            [0, 0, 0, 1, 0, 0, 0, 0, 0]
-        ]
-
-        training_data = []
+        print('Load the training data and prepare labels...')
+        game_roleplay = 'data/train/1k_std_rollplay.word'
+        game_moba = 'data/train/1k_std_moba.word'
+        game_sport = 'data/train/1k_std_sport_game.word'
+        sanguo_battle = 'data/train/1k_std_sanguo.word'
+        cloth_shirt = 'data/train/1k_std_cloth.word'
+        marriage = 'data/train/1k_std_marriage.word' 
+        sport = 'data/train/1k_std_sport.word'
+        
+        corpus2label = dict({
+            'game_roleplay': (game_roleplay, [1, 1, 0, 0, 0, 0, 0, 0, 0]), 
+            'game_moba': (game_moba, [1, 0, 1, 0, 0, 0, 0, 0, 0]),
+            'game_sport': (game_sport, [1, 0, 0, 1, 0, 0, 0, 0, 0]),
+            'sanguo_battle': (sanguo_battle, [0, 0, 0, 0, 1, 1, 0, 0, 0]),
+            'cloth_shirt': (cloth_shirt, [0, 0, 0, 0, 0, 0, 1, 1, 0]),
+            'marriage': (marriage, [0, 0, 0, 0, 0, 0, 0, 0, 1]),
+            'sport': (sport, [0, 0, 0, 1, 0, 0, 0, 0, 0])
+        }) 
+ 
+        corpus_data = []
         labels = []
-        for file_name, label in zip(corpus_files, text_labels):
+        for file_name, label in corpus2label.values():
             print(file_name, label)
             tmp_codes, tmp_labels = encode_setence(file_name, word2id, label)
-            training_data.extend(tmp_codes)
+            corpus_data.extend(tmp_codes)
             labels.extend(tmp_labels)
-
-        training_data, lengths = get_padding_codes(training_data)
-        training_data = torch.tensor(np.array(training_data), dtype=torch.long)
+        
+        
+        corpus_data, lengths = get_padding_codes(corpus_data)
+        corpus_data = torch.tensor(np.array(corpus_data), dtype=torch.long)
         lengths = torch.tensor(np.array(lengths), dtype=torch.long)
         labels = torch.tensor(np.array(labels), dtype=torch.float)
+    
+        # Train and validate
+        # labels = np.array(labels)
+        train_size = int(corpus_data.shape[0] * 0.8)
+        indices = list(range(corpus_data.shape[0]))
+        random.shuffle(indices)
+        train_indices = indices[0:train_size]
+        validate_indices = indices[train_size:]
+        
+        train_data = corpus_data[train_indices, :]
+        train_labels = labels[train_indices, :]
+        train_lengths = lengths[train_indices]
+        validate_data = corpus_data[validate_indices, :]
+        validate_labels = labels[validate_indices, :]
+        validate_lengths = lengths[validate_indices]
+
 
         # bind variables to cuda
         if torch.cuda.is_available:
-            training_data = training_data.cuda()
-            lengths = lengths.cuda()
-            labels = labels.cuda()
+            train_data = train_data.cuda()
+            train_lengths = train_lengths.cuda()
+            train_labels = train_labels.cuda()
+            validate_data = validate_data.cuda()
+            validate_labels = validate_labels.cuda()
+            validate_lengths = validate_lengths.cuda()
             model.cuda()
     
-        text_data = TextDataset(training_data, labels, lengths)
-        dataloader = data.DataLoader(text_data, batch_size=50, shuffle=True) 
-        train_lstm(model, model_path, optimizer, dataloader, labels, EPOCHS)
+        text_data = TextDataset(train_data, train_labels, train_lengths)
+        train_dataloader = data.DataLoader(text_data, batch_size=args.batch_size, shuffle=True) 
+
+        print('Train the LSTM text classifier model...')
+        train_lstm(model,
+                   model_path, 
+                   optimizer, 
+                   train_dataloader,  
+                   validate_data, validate_labels, validate_lengths, 
+                   args.epochs)
 
     if phase == 'test':
-        test_file = args.testing_file
+        test_file = args.test_file
         model.load_state_dict(torch.load(model_path)) 
         optimizer.zero_grad()
-        testing_data, labels = encode_setence(test_file, word2id, 1)
-        testing_data, lengths = get_padding_codes(testing_data)
-        testing_data = torch.tensor(np.array(testing_data), dtype=torch.long)
+        test_data, labels = encode_setence(test_file, word2id, 1)
+        test_data, lengths = get_padding_codes(test_data)
+        test_data = torch.tensor(np.array(test_data), dtype=torch.long)
         lengths = torch.tensor(np.array(lengths), dtype=torch.long)
-        scores = evaluate_lstm(model, testing_data, lengths) 
+        scores = evaluate_lstm(model, test_data, lengths) 
         scoers = scores.data.cpu().numpy()
         for idx, score in enumerate(scores):
             labels = [id2label[i] for i in np.where(score > 0.5)[0]]
             print(idx), 
             print(' '.join(labels).encode('utf-8'))
 
+
 if __name__ == '__main__':
-    train()
+    main()

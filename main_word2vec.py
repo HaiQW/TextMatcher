@@ -13,6 +13,8 @@ from __future__ import division
 
 import argparse
 
+from gensim.test.utils import get_tmpfile
+
 from models.word2vec import Word2Vec
 
 
@@ -38,7 +40,8 @@ def main():
     vocab_size = args.vocab_size
     model = Word2Vec(corpus_file, embedding_file)
     model.make_embedding(vocab_size=vocab_size)
-
+    model.model.wv.save('%s.kv' % embedding_file)
+    
 
 if __name__ == '__main__':
     main()

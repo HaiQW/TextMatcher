@@ -4,7 +4,7 @@
 # Author: hq_weng@zju.edu.cn
 # Create Date: 2018-10-12 15:42
 # Modify Author: @zju.edu.cn
-# Modify Date: 2018-10-17 11:40
+# Modify Date: 2018-10-19 01:57
 # Function: Word2Vec model based on the genism package
 #***************************************************************#
 import sys
@@ -51,7 +51,8 @@ class Word2Vec(object):
             size=vector_size, 
             min_count=min_count,
             negative=negative,
-            window=window) 
+            window=window,
+            workers=16) 
 
         # train model
         self.model.train(

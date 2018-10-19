@@ -88,10 +88,8 @@ def file2wordfile(infile, outfile, stopwords_name):
 
 
 def test():
-    file_name  = sys.argv[1]
-    stopwords_name = 'data/stopwords.txt'
-    saved_name = sys.argv[2]
-    results = file2wordfile(file_name, saved_name, stopwords_name)
-
-if __name__ == '__main__':
-    test()
+    pass
+    #file_name  = sys.argv[1]
+    #stopwords_name = 'data/stopwords.txt'
+    #saved_name = sys.argv[2]
+    #results = file2wordfile(file_name, saved_name, stopwords_name)

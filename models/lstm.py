@@ -46,8 +46,8 @@ class LSTMClassifier(nn.Module):
                 torch.FloatTensor(pretained_word_embeddings))
             # self.word_embeddings.weight.requires_grad = False 
  
-        # The LSTM takes word embeddings as inputs, and outputs hidden states
-        # with dimensionality hidden_dim.
+        # The LSTM takes word embeddings as inputs, 
+        # and outputs hidden states with dimensionality hidden_dim.
         self.lstm = nn.LSTM(
             input_size=embedding_dim, 
             hidden_size=hidden_dim, 
@@ -63,7 +63,6 @@ class LSTMClassifier(nn.Module):
             nn.BatchNorm1d(linear_hidden_dim),
             nn.ReLU(inplace=True),
             nn.Linear(linear_hidden_dim, label_size)
-            # nn.Linear(hidden_dim * 2, label_size)  
         )
 
         # self.hidden2label = nn.Linear(hidden_dim * 2, label_size)
@@ -94,9 +93,6 @@ class LSTMClassifier(nn.Module):
         lstm_out = kmax_pooling((lstm_out), 2,  self.topk)
         x = lstm_out
         #x = lstm_out[:, 0, :]
-        #x = self.relu(x)
-        #x = self.hidden2label(x).view(-1, self.label_size)
-        #x = self.norm(x)
         x = x.view(-1, 2 * self.topk * self.hidden_dim)
         x = self.fc(x)
         return x
@@ -109,7 +105,7 @@ def lstm_loss(output, label):
     return loss
 
 
-def accuracy(output, label):
+def lstm_accuracy(output, label):
     output = (nn.functional.sigmoid(output) > 0.5)
     output = output.data.cpu().numpy() 
     label = label.data.cpu().numpy()
@@ -125,9 +121,9 @@ def accuracy(output, label):
     return accuracy
 
 
-def train_lstm(model, model_path, optimizer, dataloader, labels, epochs):
-    model.train()
+def train_lstm(model, model_path, optimizer, dataloader, validate_data, validate_labels, validate_lengths, epochs):
     for epoch in range(epochs):
+        model.train() 
         t = time.time()
         losses = []
         accuracies = []
@@ -143,11 +139,20 @@ def train_lstm(model, model_path, optimizer, dataloader, labels, epochs):
             loss.backward()
             optimizer.step()
             losses.append(loss.item())
-            accuracies.append(accuracy(output, label))
-        
-        print('Epoch: %04d, loss_train: %.4f, acc_train: %4.f, time: %.4f' 
+            accuracies.append(lstm_accuracy(output, label))
+            
+        # validate 
+        model.eval()
+        print(validate_lengths)
+        validate_output = model(validate_data, validate_lengths)
+        validate_loss = lstm_loss(validate_output, validate_labels)
+        validate_accuracy = lstm_accuracy(validate_output, validate_labels) 
+
+        print('Epoch: %04d, loss_train: %.4f, acc_train: %4.f,' 
+              'loss_validate: %.4f, acc_train: %4.f, time: %.4f' 
                 % (epoch + 1, sum(losses) / float(len(losses)), 
-                   sum(accuracies) / float(len(accuracies)), time.time() - t))
+                   sum(accuracies) / float(len(accuracies)), 
+                   validate_loss, validate_accuracy, time.time() - t))
 
     torch.save(model.state_dict(), model_path)  
     return model
