@@ -34,23 +34,28 @@ An NLP program used for short text classification.
   If you prefer to train your own word embeddings, you must prepare your corpus first (the corpus used to train my
   word embeddings is not updolated online due to the limitation of free file sharing space).
   
-  - Train word embeddings: python main_word2vec.py --corpus_file=path/to/corpus/file
-  --embedding_file=path/to/save/embedding/file 
-  
+  - To train word embeddings, run
+  ```bash
+  python main_word2vec.py --corpus_file=path/to/corpus/file --embedding_file=path/to/save/embedding/file 
+  ```
   For your convenience, you can simply use the pretrained word embeddings.
 
 ### 3. Train the LSTM multilabel classifier.
-  - Train: 
+  - To train the LSTM classifier, run: 
   ```bash 
   python main_lstm.py --phase=train --embedding_file=path/to/file --model_path=path/to/model
   ```
-  - Test: 
+  - To test the LSTM classifier, run: 
   ```
-  python main_lstm.py --phase=test --embedding_file=path/to/file --model_path=path/to/model --testing_file=path/to/testing/file
+  python main_lstm.py --phase=test --embedding_file=path/to/file --model_path=path/to/model \
+  --testing_file=path/to/testing/file
   ```
 
 ### 4. Predict the label using the naive method.
-  - python main_naive.py --embedding_file=trained_models/40w_embedding.txt --testing_file=data/test/test.word 
+  - To test the naive method, run
+  ```bash
+  python main_naive.py --embedding_file=trained_models/40w_embedding.txt --testing_file=data/test/test.word 
+  ```
 
 
 
