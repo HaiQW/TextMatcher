@@ -34,10 +34,9 @@ def label_similarity(words, labels, embeddings, word2id):
         embedding = embeddings[wid:wid+1]
         d = cosine_similarity(embedding, label2embeddings)[0] 
         d = zip(labels, d) 
-        for w in d[0:]:
+        for w in d:
             labelscores[w[0]] += w[1]
 
-    # softmax label scores
     softmax_values = nn.functional.softmax(
         torch.tensor(labelscores.values())).data.cpu().numpy()
     labelscores = zip(labelscores.keys(), softmax_values)
