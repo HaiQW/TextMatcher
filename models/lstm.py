@@ -111,11 +111,12 @@ def lstm_accuracy(output, label):
     label = label.data.cpu().numpy()
     correct = 0
     size = len(label)
+    # print(output)
     for idx in range(size):
         pred = output[idx]
         true = label[idx]
         tmp = (pred == true).sum()
-        if tmp == len(pred):
+        if tmp == len(true):
             correct += 1
     accuracy = float(correct) / size
     return accuracy
@@ -139,17 +140,16 @@ def train_lstm(model, model_path, optimizer, dataloader, validate_data, validate
             loss.backward()
             optimizer.step()
             losses.append(loss.item())
-            accuracies.append(lstm_accuracy(output, label))
+            accuracies.append(float(lstm_accuracy(output, label)))
             
         # validate 
         model.eval()
-        print(validate_lengths)
         validate_output = model(validate_data, validate_lengths)
         validate_loss = lstm_loss(validate_output, validate_labels)
         validate_accuracy = lstm_accuracy(validate_output, validate_labels) 
 
-        print('Epoch: %04d, loss_train: %.4f, acc_train: %4.f,' 
-              'loss_validate: %.4f, acc_train: %4.f, time: %.4f' 
+        print('Epoch: %04d, loss_train: %.4f, acc_train: %.4f,' 
+              'loss_validate: %.4f, acc_train: %.4f, time: %.4f' 
                 % (epoch + 1, sum(losses) / float(len(losses)), 
                    sum(accuracies) / float(len(accuracies)), 
                    validate_loss, validate_accuracy, time.time() - t))
