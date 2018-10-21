@@ -29,7 +29,7 @@ An NLP program used for short text classification.
   # to download from Dropbox
   wget https://www.dropbox.com/s/2sh2c6n4x17avbe/40w_embedding.txt?dl=0 
   # to download from Google Drive
-  (Google Drive): https://drive.google.com/file/d/1JZ21lqcBU3_9nmDu9WTFpMBp9AdLa_x3/view?usp=sharing
+  wget https://drive.google.com/file/d/1JZ21lqcBU3_9nmDu9WTFpMBp9AdLa_x3/view?usp=sharing
   ```
   The above word embeddings contain a totol of 400,000+ words.
   
