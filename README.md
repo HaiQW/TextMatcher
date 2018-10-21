@@ -34,12 +34,15 @@ An NLP program used for short text classification.
   The above word embeddings contain a totol of 400,000+ words.
   
   - To download the pretrained the LSTM model, run:
-  ```base
+  ```bash
   # to download from Dropbox
   wget  https://www.dropbox.com/s/vm6fhcuzxjortjd/model.lstm?dl=0
   # to download from Google Drive
   wget https://drive.google.com/file/d/1E5ky_TXmci7nG4H59AG4UY2ZUhHIBShd/view?usp=sharing
   ```
+
+It would be more convenient for running the following experiment steps 
+if you place the downloaded pretrained models into the `trained_models` file folder.
 
 
 ### 2. Train the word embeddings (optional).
@@ -57,15 +60,18 @@ An NLP program used for short text classification.
 ### 3. Train the LSTM multilabel classifier.
   - To train the LSTM classifier, run: 
   ```bash 
-  python main_lstm.py --phase=train --embedding_file=path/to/file --model_path=path/to/model
+  python main_lstm.py --phase=train --embedding_file=trained_models/40w_embedding.txt\
+  --model_path=trained_models/model.lstm
   ```
   
 ### 4. Match the title label.
 
   - To predict using the LSTM classifier, run: 
   ```
-  python main_lstm.py --phase=test --embedding_file=path/to/file --model_path=path/to/model \
-  --test_file=path/to/testing/file
+  python main_lstm.py --phase=test \
+  --embedding_file=trained_models/40w_embedding.txt \
+  --model_path=trained_models/model.lstm \
+  --test_file=data/test/test.word 
   ```
   - To predict using the naive method (purely base on the word embeddings), run:
   ```bash
