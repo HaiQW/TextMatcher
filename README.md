@@ -24,11 +24,22 @@ An NLP program used for short text classification.
   This corpus is a combination of the whole Chinese wikipedia corpus and part of Baidu baike corpus.
   Also, you can prepare your use-specific corpus if you prefer.
  
-  - Pretrained Word embeddings: https://www.dropbox.com/s/2sh2c6n4x17avbe/40w_embedding.txt?dl=0
+  - To download the pretrained Word embeddings, run:
+  ```bash
+  # to download from Dropbox
+  wget https://www.dropbox.com/s/2sh2c6n4x17avbe/40w_embedding.txt?dl=0 
+  # to download from Google Drive
+  (Google Drive): https://drive.google.com/file/d/1JZ21lqcBU3_9nmDu9WTFpMBp9AdLa_x3/view?usp=sharing
+  ```
+  The above word embeddings contain a totol of 400,000+ words.
   
-  Thoese word embeddings contain a totol of 400,000+ words.  
-  
-  - Pretrained LSTM model: https://www.dropbox.com/s/vm6fhcuzxjortjd/model.lstm?dl=0
+  - To download the pretrained the LSTM model, run:
+  ```base
+  # to download from Dropbox
+  wget  https://www.dropbox.com/s/vm6fhcuzxjortjd/model.lstm?dl=0
+  # to download from Google Drive
+  wget https://drive.google.com/file/d/1E5ky_TXmci7nG4H59AG4UY2ZUhHIBShd/view?usp=sharing
+  ```
 
 
 ### 2. Train the word embeddings (optional).
