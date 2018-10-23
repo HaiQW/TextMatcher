@@ -60,7 +60,7 @@ if you place the downloaded pretrained models into the `trained_models` file fol
 ### 3. Train the LSTM multilabel classifier.
   - To train the LSTM classifier, run: 
   ```bash 
-  python main_lstm.py --phase=train --embedding_file=trained_models/40w_embedding.txt\
+  PYTHONIOENCODING=utf-8:surrogateescape python main_lstm.py --phase=train --embedding_file=trained_models/40w_embedding.txt\
   --model_path=trained_models/model.lstm
   ```
   
@@ -68,14 +68,14 @@ if you place the downloaded pretrained models into the `trained_models` file fol
 
   - To predict using the LSTM classifier, run: 
   ```
-  python main_lstm.py --phase=test \
+  PYTHONIOENCODING=utf-8:surrogateescape python main_lstm.py --phase=test \
   --embedding_file=trained_models/40w_embedding.txt \
   --model_path=trained_models/model.lstm \
   --test_file=data/test/test.word 
   ```
   - To predict using the naive method (purely base on the word embeddings), run:
   ```bash
-  python main_naive.py --embedding_file=trained_models/40w_embedding.txt --test_file=data/test/test.word 
+  PYTHONIOENCODING=utf-8:surrogateescape python main_naive.py --embedding_file=trained_models/40w_embedding.txt --test_file=data/test/test.word 
   ```
 
 
