@@ -174,15 +174,22 @@ def main():
         model.load_state_dict(torch.load(model_path)) 
         optimizer.zero_grad()
         test_data, labels = encode_setence(test_file, word2id, 1)
-        test_data, lengths = get_padding_codes(test_data)
-        test_data = torch.tensor(np.array(test_data), dtype=torch.long)
+        padding_test_data, lengths = get_padding_codes(test_data)
+        padding_test_data = torch.tensor(np.array(padding_test_data), dtype=torch.long)
         lengths = torch.tensor(np.array(lengths), dtype=torch.long)
-        scores = evaluate_lstm(model, test_data, lengths) 
+        scores = evaluate_lstm(model, padding_test_data, lengths) 
         scoers = scores.data.cpu().numpy()
+
+        # for print the result
         for idx, score in enumerate(scores):
-            labels = [id2label[i] for i in np.where(score > 0.5)[0]]
+            sentence = [id2word[int(code)] for code in test_data[idx]]
+            tmp_labels = [id2label[i] for i in np.where(score > 0.5)[0]]
+            tmp_score = np.array([float(score[i]) for i in np.where(score > 0.5)[0]]) 
+            tmp_score = tmp_score.prod()
             print(idx), 
-            print(' '.join(labels).encode('utf-8'))
+            print(' '.join(sentence).encode('utf-8').decode('utf-8'))
+            print(' '.join(tmp_labels).encode('utf-8').decode('utf-8')),
+            print(tmp_score) 
 
 
 if __name__ == '__main__':

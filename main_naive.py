@@ -52,12 +52,12 @@ if __name__ == '__main__':
         type=str, 
         help='Filename containing the pretrained word embeddings.')
     parser.add_argument(
-        '--testing_file', 
+        '--test_file', 
         type=str, 
-        help='File name containing the testing examples.')
+        help='Filename containing the testing examples.')
 
     args = parser.parse_args() 
-    test_filename = args.testing_file
+    test_filename = args.test_file
     embedding_file = args.embedding_file
     embeddings, word2id, id2word = load_embedding(embedding_file)
     
@@ -84,15 +84,16 @@ if __name__ == '__main__':
             score = first_label_scores[0][1]
             first_label = first_label_scores[0][0]
             second_labels = categories[first_label]
-            print(line.strip().encode('utf-8'))
+            print(line.strip().encode('utf-8').decode('utf-8'))
+            # print(line.encode('utf-8').decode('utf-8'))
             print(first_label.encode('utf-8')), 
             if len(second_labels) > 1:
                 second_label_scores = label_similarity(sentence, second_labels, embeddings, word2id)
                 second_label = second_label_scores[0][0]
                 second_score = second_label_scores[0][1]
                 score = score * second_score
-                print(second_label.encode('utf-8')), 
+                print(second_label.encode('utf-8').decode('utf-8')), 
             else:
-                print(''.join(second_labels).encode('utf-8')), 
+                print(''.join(second_labels).encode('utf-8').decode('utf-8')), 
             print(score)
             print('---------------------------- \n')
