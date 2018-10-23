@@ -38,7 +38,7 @@ def label_similarity(words, labels, embeddings, word2id):
             labelscores[w[0]] += w[1]
 
     softmax_values = nn.functional.softmax(
-        torch.tensor(list(labelscores.values()))).data.cpu().numpy()
+        torch.tensor(list(labelscores.values())), dim=0).data.cpu().numpy()
     labelscores = zip(labelscores.keys(), softmax_values)
     labelscores = sorted(labelscores, key=lambda x:x[1], reverse=True) 
 
@@ -86,7 +86,7 @@ if __name__ == '__main__':
             second_labels = categories[first_label]
             print(line.strip().encode('utf-8').decode('utf-8'))
             # print(line.encode('utf-8').decode('utf-8'))
-            print(first_label.encode('utf-8')), 
+            print(first_label.encode('utf-8').decode('utf-8')), 
             if len(second_labels) > 1:
                 second_label_scores = label_similarity(sentence, second_labels, embeddings, word2id)
                 second_label = second_label_scores[0][0]
