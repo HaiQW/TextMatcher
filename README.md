@@ -24,11 +24,25 @@ An NLP program used for short text classification.
   This corpus is a combination of the whole Chinese wikipedia corpus and part of Baidu baike corpus.
   Also, you can prepare your use-specific corpus if you prefer.
  
-  - Pretrained Word embeddings: https://www.dropbox.com/s/2sh2c6n4x17avbe/40w_embedding.txt?dl=0
+  - To download the pretrained Word embeddings, run:
+  ```bash
+  # to download from Dropbox
+  wget https://www.dropbox.com/s/2sh2c6n4x17avbe/40w_embedding.txt?dl=0 
+  # to download from Google Drive
+  wget https://drive.google.com/file/d/1JZ21lqcBU3_9nmDu9WTFpMBp9AdLa_x3/view?usp=sharing
+  ```
+  The above word embeddings contain a totol of 400,000+ words.
   
-  Thoese word embeddings contain a totol of 400,000+ words.  
-  
-  - Pretrained LSTM model: https://www.dropbox.com/s/vm6fhcuzxjortjd/model.lstm?dl=0
+  - To download the pretrained the LSTM model, run:
+  ```bash
+  # to download from Dropbox
+  wget  https://www.dropbox.com/s/vm6fhcuzxjortjd/model.lstm?dl=0
+  # to download from Google Drive
+  wget https://drive.google.com/file/d/1E5ky_TXmci7nG4H59AG4UY2ZUhHIBShd/view?usp=sharing
+  ```
+
+It would be more convenient for running the following experiment steps 
+if you place the downloaded pretrained models into the `trained_models` file folder.
 
 
 ### 2. Train the word embeddings (optional).
@@ -46,19 +60,22 @@ An NLP program used for short text classification.
 ### 3. Train the LSTM multilabel classifier.
   - To train the LSTM classifier, run: 
   ```bash 
-  python main_lstm.py --phase=train --embedding_file=path/to/file --model_path=path/to/model
+  PYTHONIOENCODING=utf-8:surrogateescape python main_lstm.py --phase=train --embedding_file=trained_models/40w_embedding.txt\
+  --model_path=trained_models/model.lstm
   ```
   
 ### 4. Match the title label.
 
   - To predict using the LSTM classifier, run: 
   ```
-  python main_lstm.py --phase=test --embedding_file=path/to/file --model_path=path/to/model \
-  --test_file=path/to/testing/file
+  PYTHONIOENCODING=utf-8:surrogateescape python main_lstm.py --phase=test \
+  --embedding_file=trained_models/40w_embedding.txt \
+  --model_path=trained_models/model.lstm \
+  --test_file=data/test/test.word 
   ```
   - To predict using the naive method (purely base on the word embeddings), run:
   ```bash
-  python main_naive.py --embedding_file=trained_models/40w_embedding.txt --test_file=data/test/test.word 
+  PYTHONIOENCODING=utf-8:surrogateescape python main_naive.py --embedding_file=trained_models/40w_embedding.txt --test_file=data/test/test.word 
   ```
 
 
